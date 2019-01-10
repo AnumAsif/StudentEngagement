@@ -13,7 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.lawrence254.moringa.R;
 import models.Article;
@@ -21,18 +24,27 @@ import models.Article;
 import com.lawrence254.moringa.activities.ArticleDetailsActivity;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import models.Comment;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+import service.FavouriteService;
 
 public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ArticlesViewHolder>{
+    private FirebaseAuth fAuth;
+    public String UUID;
     @NonNull
 
 private ArrayList<Article> mArticles = new ArrayList<>();
     private Context mContext;
-    private GestureDetectorCompat mGDetector;
+//    private GestureDetectorCompat mGDetector;
 
     public ArticlesAdapter(Context context, ArrayList<Article> article){
         mContext = context;
@@ -70,7 +82,7 @@ private ArrayList<Article> mArticles = new ArrayList<>();
             super(itemView);
 
             ButterKnife.bind(this,itemView);
-            mGDetector = new GestureDetectorCompat(this,this);
+//            mGDetector = new GestureDetectorCompat(this,this);
             mContext = itemView.getContext();
         }
         public void bindArticles(Article article){
@@ -80,18 +92,29 @@ private ArrayList<Article> mArticles = new ArrayList<>();
             like.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (){
 
-                    }else {
-                        SharedPreferences sharedPref = mContext.getSharedPreferences("ARTICLES", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        Gson gson = new Gson();
-                        String article = gson.toJson(mArticles.get(getAdapterPosition()));
-                        Log.e("SHAREDPREF", "STORED ITEM: " + article);
-                        editor.putString("Article", article);
-                        editor.commit();
-                        like.setImageResource(R.drawable.heart);
+                    fAuth = FirebaseAuth.getInstance();
+                    FirebaseUser firebaseUser= fAuth.getCurrentUser();
+                    if (firebaseUser != null) {
+                        UUID = firebaseUser.getUid();
+                        submitFavourite(UUID, art);
                     }
+                    else{
+                        Toast.makeText(mContext, "User Identifier not found. Please Re-try", Toast.LENGTH_SHORT).show();
+                    }
+
+//                    if (){
+//
+//                    }else {
+//                        SharedPreferences sharedPref = mContext.getSharedPreferences("ARTICLES", Context.MODE_PRIVATE);
+//                        SharedPreferences.Editor editor = sharedPref.edit();
+//                        Gson gson = new Gson();
+//                        String article = gson.toJson(mArticles.get(getAdapterPosition()));
+//                        Log.e("SHAREDPREF", "STORED ITEM: " + article);
+//                        editor.putString("Article", article);
+//                        editor.commit();
+//                        like.setImageResource(R.drawable.heart);
+//                    }
                 }
             });
 
@@ -101,7 +124,7 @@ private ArrayList<Article> mArticles = new ArrayList<>();
 
                     Intent intent=new Intent(mContext, ArticleDetailsActivity.class);
                     intent.putExtra("art",art);
-//                    mContext. startActivity(intent);
+                    mContext. startActivity(intent);
                 }
             });
             Picasso.get()
@@ -113,10 +136,37 @@ private ArrayList<Article> mArticles = new ArrayList<>();
             mSource.setText(article.getSource());
             mTag.setText(article.getTag());
             mDate.setText(article.getDate());
-            mComment.setText(String.valueOf(article.getComments()));
-            mLike.setText(String.valueOf(article.getLikes()));
-            mDescription.setText(article.getDescription());
+//            mComment.setText(article.getComments().); This is one string only
 
+//            mLike.setText(article.getLikes());
+            mDescription.setText(article.getDescription());
+//            Dealing with comments with iterator
+            ArrayList<Comment> comments = new ArrayList<>();
+
+            Iterator comment = comments.iterator();
+            while(comment.hasNext()){
+                String disName = (String)comment.next();
+                String uuid = (String) comment.next();
+                String com = (String) comment.next();
+
+                mComment.setText(com);
+
+            }
         }
+    }
+
+    private void submitFavourite(final String uuid, final String art) {
+        final FavouriteService favouriteService = new FavouriteService();
+        FavouriteService.saveFavourite(uuid, art, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("ERROR:", "Error Submitting "+uuid + ": "+art);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.e("SUCCESS", "SERVER SAYS: "+response);
+            }
+        });
     }
 }

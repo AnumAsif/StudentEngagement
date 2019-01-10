@@ -104,6 +104,6 @@ public class articleFragment extends Fragment implements View.OnClickListener {
 //        Log.e("SHAREDPREF", "STORED ITEM: "+article);
 //        editor.putString("Article",article);
 //        editor.commit();
-//        mLike.setImageResource(R.drawable.heart);
+        mLike.setImageResource(R.drawable.heart);
     }
 }

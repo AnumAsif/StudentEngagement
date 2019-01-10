@@ -39,8 +39,6 @@ public class firebaseLoginActivity extends AppCompatActivity implements View.OnC
 
         FirebaseUser firebaseUser= fAuth.getCurrentUser();
 
-
-
         if (firebaseUser != null){
             Intent intent = new Intent(this,homeActivity.class);
             startActivity(intent);

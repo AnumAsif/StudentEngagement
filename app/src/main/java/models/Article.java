@@ -3,8 +3,13 @@ package models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class Article {
 
+    @SerializedName("comments")
+    @Expose
+    private List<Comment> comments = null;
     @SerializedName("userId")
     @Expose
     private Integer userId;
@@ -35,12 +40,16 @@ public class Article {
     @SerializedName("date")
     @Expose
     private String date;
-    @SerializedName("comments")
-    @Expose
-    private int comments;
     @SerializedName("likes")
     @Expose
     private int likes;
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
 
     public Integer getUserId() {
         return userId;
@@ -72,14 +81,6 @@ public class Article {
 
     public void setDate(String date) {
         this.date = date;
-    }
-
-    public int getComments() {
-        return comments;
-    }
-
-    public void setComments(int comments) {
-        this.comments = comments;
     }
 
     public int getLikes() {
