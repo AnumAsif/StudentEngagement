@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 import com.lawrence254.moringa.R;
 import adapters.ArticlesAdapter;
@@ -30,6 +31,9 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class articleFragment extends Fragment implements View.OnClickListener {
+    private FirebaseAuth firebaseAuth;
+    public String userId;
+
     @BindView(R.id.articleRecycler)RecyclerView mRecyclerView;
 //    @BindView(R.id.imLikes)ImageView mLike;
     ImageView mLike;
@@ -52,6 +56,10 @@ public class articleFragment extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
         View root= inflater.inflate(R.layout.fragment_article, container, false);
         ButterKnife.bind(this,root);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        userId = firebaseAuth.getUid();
+
         mLike = root.findViewById(R.id.imLikes);
         getArticles();
         return root;
@@ -104,6 +112,7 @@ public class articleFragment extends Fragment implements View.OnClickListener {
 //        Log.e("SHAREDPREF", "STORED ITEM: "+article);
 //        editor.putString("Article",article);
 //        editor.commit();
+
         mLike.setImageResource(R.drawable.heart);
     }
 }

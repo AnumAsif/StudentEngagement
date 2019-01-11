@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.lawrence254.moringa.R;
 
 import java.io.IOException;
@@ -25,6 +26,8 @@ import okhttp3.Response;
 import service.ArticlesService;
 
 public class favouriteFragment extends Fragment implements View.OnClickListener {
+
+
     @BindView(R.id.articleRecycler)RecyclerView mRecyclerView;
 //    @BindView(R.id.imLikes)ImageView mLike;
     ImageView mLike;
@@ -48,6 +51,7 @@ public class favouriteFragment extends Fragment implements View.OnClickListener 
         View root= inflater.inflate(R.layout.fragment_article, container, false);
         ButterKnife.bind(this,root);
         mLike = root.findViewById(R.id.imLikes);
+
         getArticles();
         return root;
     }
@@ -99,5 +103,6 @@ public class favouriteFragment extends Fragment implements View.OnClickListener 
 //        editor.putString("Article",article);
 //        editor.commit();
 //        mLike.setImageResource(R.drawable.heart);
+
     }
 }

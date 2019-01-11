@@ -44,7 +44,6 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
 
 private ArrayList<Article> mArticles = new ArrayList<>();
     private Context mContext;
-//    private GestureDetectorCompat mGDetector;
 
     public ArticlesAdapter(Context context, ArrayList<Article> article){
         mContext = context;
@@ -75,21 +74,20 @@ private ArrayList<Article> mArticles = new ArrayList<>();
         @BindView(R.id.tvDate)TextView mDate;
         @BindView(R.id.tvComment)TextView mComment;
         @BindView(R.id.tvlike) TextView mLike;
-        @BindView(R.id.imLikes)ImageView like;
+        @BindView(R.id.imLikes)ImageView mlike;
         private Context mContext;
 
         public ArticlesViewHolder(View itemView){
             super(itemView);
 
             ButterKnife.bind(this,itemView);
-//            mGDetector = new GestureDetectorCompat(this,this);
             mContext = itemView.getContext();
         }
         public void bindArticles(Article article){
             final String art = article.getUrl();
             String author = article.getAuthor();
 //TODO: Solve issue with saving whole response. Need to save only selected item:
-            like.setOnClickListener(new View.OnClickListener() {
+            mlike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
@@ -98,23 +96,11 @@ private ArrayList<Article> mArticles = new ArrayList<>();
                     if (firebaseUser != null) {
                         UUID = firebaseUser.getUid();
                         submitFavourite(UUID, art);
+                        Log.e("LIKED", "Submitting..."+UUID + " "+art );
                     }
                     else{
                         Toast.makeText(mContext, "User Identifier not found. Please Re-try", Toast.LENGTH_SHORT).show();
                     }
-
-//                    if (){
-//
-//                    }else {
-//                        SharedPreferences sharedPref = mContext.getSharedPreferences("ARTICLES", Context.MODE_PRIVATE);
-//                        SharedPreferences.Editor editor = sharedPref.edit();
-//                        Gson gson = new Gson();
-//                        String article = gson.toJson(mArticles.get(getAdapterPosition()));
-//                        Log.e("SHAREDPREF", "STORED ITEM: " + article);
-//                        editor.putString("Article", article);
-//                        editor.commit();
-//                        like.setImageResource(R.drawable.heart);
-//                    }
                 }
             });
 
@@ -136,9 +122,8 @@ private ArrayList<Article> mArticles = new ArrayList<>();
             mSource.setText(article.getSource());
             mTag.setText(article.getTag());
             mDate.setText(article.getDate());
-//            mComment.setText(article.getComments().); This is one string only
+            mLike.setText(String.valueOf(article.getLikes()));
 
-//            mLike.setText(article.getLikes());
             mDescription.setText(article.getDescription());
 //            Dealing with comments with iterator
             ArrayList<Comment> comments = new ArrayList<>();
@@ -166,7 +151,9 @@ private ArrayList<Article> mArticles = new ArrayList<>();
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 Log.e("SUCCESS", "SERVER SAYS: "+response);
+//                mlike.setImageResource(R.drawable.heart);
             }
+
         });
     }
 }

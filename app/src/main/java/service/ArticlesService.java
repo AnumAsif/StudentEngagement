@@ -25,7 +25,7 @@ import okhttp3.Response;
 public class ArticlesService {
     private static OkHttpClient client = new OkHttpClient();
     public static void getArticle(Callback callback) {
-        HttpUrl.Builder builder = HttpUrl.parse(Constants.ARTICLES_URL).newBuilder();
+        HttpUrl.Builder builder = HttpUrl.parse(Constants.CUSTOM_API_ARTICLES).newBuilder();
 
         String url = builder.build().toString();
 //        Log.d("URL FOR ", "findNews is: "+url);
@@ -46,7 +46,7 @@ public class ArticlesService {
 
             if (response.isSuccessful()){
                 JSONObject jsonObject = new JSONObject(json);
-                JSONArray newsJson = jsonObject.getJSONArray("articles");
+                JSONArray newsJson = jsonObject.getJSONArray("results");
                 Type collectionType = new TypeToken<List<Article>>() {}.getType();
                 Gson gson = new GsonBuilder().create();
                 article = gson.fromJson(newsJson.toString(), collectionType);

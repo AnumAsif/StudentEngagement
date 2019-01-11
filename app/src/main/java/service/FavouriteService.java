@@ -31,7 +31,7 @@ public class FavouriteService {
     public static void saveFavourite(String uuid, String art,Callback callback) {
 
         RequestBody body = new FormBody.Builder()
-                .add("uuid",uuid)
+                .add("user_uuid",uuid)
                 .add("article",art)
                 .build();
 
